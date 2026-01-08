@@ -85,4 +85,51 @@ def kecepatan_tinggi(x):
 # Kecepatan kipas [0,100]
 
 # IF Suhu=Dingin AND kelembapan=Tinggi THEN Kecepatan=Rendah
-# IF Suhu=Sejuk AND kelembapan=Sedang
+# IF Suhu=Sejuk AND kelembapan=Sedang THEN Kecepatan=Sedang
+# IF Suhu=Panas OR kelembapan=Sedang THEN Kecepatan=Tinggi
+
+suhu = 27
+kelembapan = 80
+
+# MAIN PROGRAM #
+
+#================================
+#  FUZZYFIKASI
+#================================
+
+# Derajat keanggotaan suhu
+miu_dingin = suhu_dingin(suhu)
+miu_sejuk = suhu_sejuk(suhu)
+miu_panas = suhu_panas(suhu)
+
+# Derajat keanggotaan kelembapan
+miu_rendah = lembab_rendah(kelembaban)
+miu_sedang = lembab_sedang(kelembaban)
+miu_tinggi = lembab_tinggi(kelembaban)
+
+#================================
+#  INFERENSI (a-predicate)
+#================================
+
+# IF Suhu=Dingin AND kelembapan=Tinggi THEN Kecepatan=Rendah
+# IF Suhu=Sejuk AND kelembapan=Sedang THEN Kecepatan=Sedang
+# IF Suhu=Panas OR kelembapan=Sedang THEN Kecepatan=Tinggi
+
+# R1: AND -> min
+a1 = min(miu_dingin, miu_tinggi)
+z1 = kecepatan_rendah(a1)
+
+# R2: AND -> min
+a2 = min(miu_sejuk, miu_sedang)
+z2 = kecepatan_sedang(a2)
+
+# R3: OR -> max
+a3 = max(miu_panas, miu_sedang)
+z3 = kecepatan_tinggi(a3)
+
+#================================
+#  DEFUZZIFIKASI (Weighted Average)
+#================================
+
+kecepatan = (a1*z1 + a2*z2 + a3*z3) / (a1 + a2 + a3)
+print("Kecepatan kipas angin", kecepatan)
